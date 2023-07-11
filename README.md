@@ -1,20 +1,12 @@
 # Website-certificates-monitoring-template-for-Zabbix
-Easily monitor certificates on multiple websites with use of Zabbix agent 2 built-in functionality. Tested on Zabbix 6.4.4.
+<img width="1487" alt="Screenshot 2023-07-11 at 16 09 45" src="https://github.com/dali-bor/Website-certificates-monitoring-template-for-Zabbix/assets/139234961/5d48bc06-26dd-4980-8e9b-08471d5c5c4a">
+Easily monitor certificate expiration dates on multiple websites with the use of Zabbix agent 2 built-in functionality. The template is able to create items for each website listed in JSON using low level discovery. The first trigger is fired 7 days before a certificates expiration date. The second one is fired when a certificate is expired. 
+
+This template is based on the official [Website certificate by Zabbix agent 2](https://git.zabbix.com/projects/ZBX/repos/zabbix/browse/templates/app/certificate_agent2?at=release/6.4).
+
+Tested on Zabbix 6.4.4.
 ## Why two versions?
-There are two versions of the template. They only vary in way they get targeted websites information in JSON format. In website_certificate_sender.yaml is the JSON sent using zabbix_sender. In website_certificate_macro.yaml is the JSON stored in macro and is set within Zabbix web interface for easier usage.
+There are two versions of the template. The only difference between them is in the way they gather websites information. `Website_certificate_sender.yaml` is configured to recieve JSON via zabbix trapper. `website_certificate_macro.yaml` uses macro set in Zabbix web interface.
 ## How to use
-1. Create JSON in following format
-  - ```{"data":[{"{#CMNAME}":"<common name>", "{#PORT}":"<port number>", "{#IPADDR}":"<ip address>"}]} ```
-  - example of filled JSON
-    - ```
-      {"data":[{ "{#CMNAME}":"google.com", "{#PORT}":"443", "{#IPADDR}":"142.251.36.110"}, { "{#CMNAME}":"seznam.cz", "{#PORT}":"443", "{#IPADDR}":"77.75.77.222"}]}
-      ```
-2. Create new macro (only macro version)
-  - administration > macros > add
-  - set macro name to `{$WEBSITE_CERTIFICATE_TARGETS_LIST}`
-  - as value set the JSON
-3. Import desired template
-4. Assign it to host
-5. Use zabbix_sender to send JSON (only sender version)
-  - install zabbix_sender on your system
-  - send item with key `targets.list` and value of JSON
+- [How to use website_certificate_sender.yaml](https://github.com/dali-bor/Website-certificates-monitoring-template-for-Zabbix/blob/main/SENDER_SETUP.md)
+- [How to use website_certificate_macro.yaml](https://github.com/dali-bor/Website-certificates-monitoring-template-for-Zabbix/blob/main/MACRO_SETUP.md)
