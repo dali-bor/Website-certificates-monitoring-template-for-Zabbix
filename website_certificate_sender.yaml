@@ -1,0 +1,83 @@
+zabbix_export:
+  version: '6.4'
+  template_groups:
+    - uuid: a571c0d144b14fd4a87a9d9b2aa9fcd6
+      name: Templates/Applications
+  templates:
+    - uuid: 12d02e057a7b453bb439b774baa05fa1
+      template: 'Website certificate'
+      name: 'Website certificate'
+      description: 'The template to monitor TLS/SSL certificate on the website by Zabbix agent 2.'
+      groups:
+        - name: Templates/Applications
+      items:
+        - uuid: 90ea6aeea5df4443bbd27fc1a68067eb
+          name: 'targets list'
+          type: TRAP
+          key: targets.list
+          delay: '0'
+          history: 7d
+          trends: '0'
+          value_type: TEXT
+          description: 'Stores JSON string containing all the info about targets to scan'
+      discovery_rules:
+        - uuid: 8beaea3b674e47a5993956d62aba4b49
+          name: 'add items for ssl checks'
+          type: DEPENDENT
+          key: local.targets.list
+          delay: '0'
+          lifetime: 0d
+          item_prototypes:
+            - uuid: df20c3d3a243455f82b842e2c3f21625
+              name: 'SSL cert expiration date - {#CMNAME}:{#PORT}'
+              type: DEPENDENT
+              key: 'cert.not_after[{#CMNAME}:{#PORT}]'
+              delay: '0'
+              history: 7d
+              trends: 7d
+              units: unixtime
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - $.x509.not_after.timestamp
+              master_item:
+                key: 'web.certificate.get[{#CMNAME},{#PORT},{#IPADDR}]'
+              trigger_prototypes:
+                - uuid: 8a47b9cee8264d558b6d43de4a67f249
+                  expression: '(last(/Website certificate/cert.not_after[{#CMNAME}:{#PORT}]) - now()) / 86400 <= 0'
+                  name: 'SSL cert expired - {#CMNAME}'
+                  priority: HIGH
+                  description: 'The trigger is fired when certificate passes the date of expiration'
+                - uuid: b9fd685174c1456b95dc266c492cdc9c
+                  expression: '(last(/Website certificate/cert.not_after[{#CMNAME}:{#PORT}]) - now()) / 86400 < 7'
+                  name: 'SSL cert will expire in 7 days - {#CMNAME}'
+                  priority: WARNING
+                  description: 'Trigger is fired when 7 days of certificate validity are remaining.'
+            - uuid: 46249b58d0a6484bba807ea5082f5ebf
+              name: 'SSL certificate - {#CMNAME}:{#PORT}'
+              type: ZABBIX_ACTIVE
+              key: 'web.certificate.get[{#CMNAME},{#PORT},{#IPADDR}]'
+              delay: 1d
+              history: 7d
+              trends: '0'
+              value_type: TEXT
+              description: 'Raw certificate information in x509 format'
+          master_item:
+            key: targets.list
+      tags:
+        - tag: class
+          value: software
+        - tag: target
+          value: certificate
+      macros:
+        - macro: '{$CERT.EXPIRY.WARN}'
+          value: '7'
+          description: 'Number of days until the certificate expires.'
+        - macro: '{$CERT.WEBSITE.HOSTNAME}'
+          value: '<Put DNS name>'
+          description: 'The website DNS name for the connection.'
+        - macro: '{$CERT.WEBSITE.IP}'
+          description: 'The website IP address for the connection.'
+        - macro: '{$CERT.WEBSITE.PORT}'
+          value: '443'
+          description: 'The TLS/SSL port number of the website.'
