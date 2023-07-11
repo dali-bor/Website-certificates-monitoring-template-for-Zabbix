@@ -1,5 +1,5 @@
 # Website-certificates-monitoring-template-for-Zabbix
-Easily monitor certificates on multiple websites with use of Zabbix agent 2 built-in functionality.
+Easily monitor certificates on multiple websites with use of Zabbix agent 2 built-in functionality. Tested on Zabbix 6.4.4.
 ## Why two versions?
 There are two versions of the template. They only vary in way they get targeted websites information in JSON format. In website_certificate_sender.yaml is the JSON sent using zabbix_sender. In website_certificate_macro.yaml is the JSON stored in macro and is set within Zabbix web interface for easier usage.
 ## How to use
