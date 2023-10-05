@@ -71,14 +71,4 @@ zabbix_export:
         - tag: target
           value: certificate
       macros:
-        - macro: '{$CERT.EXPIRY.WARN}'
-          value: '7'
-          description: 'Number of days until the certificate expires.'
-        - macro: '{$CERT.WEBSITE.HOSTNAME}'
-          value: '<Put DNS name>'
-          description: 'The website DNS name for the connection.'
-        - macro: '{$CERT.WEBSITE.IP}'
-          description: 'The website IP address for the connection.'
-        - macro: '{$CERT.WEBSITE.PORT}'
-          value: '443'
-          description: 'The TLS/SSL port number of the website.'
+        - macro: '{$WEBSITE_CERTIFICATE_TARGETS_LIST}'
