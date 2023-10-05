@@ -5,9 +5,6 @@
     - ```
       {"data":[{ "{#CMNAME}":"google.com", "{#PORT}":"443", "{#IPADDR}":"142.251.36.110"}, { "{#CMNAME}":"seznam.cz", "{#PORT}":"443", "{#IPADDR}":"77.75.77.222"}]}
       ```
-2. Create a new macro
-  - administration > macros > add
-  - set macro name to `{$WEBSITE_CERTIFICATE_TARGETS_LIST}`
-  - as a value set JSON
-3. Import a `website_certificate_macro.yaml` template into Zabbix
-4. Assign it to host
+2. Import a `website_certificate_macro.yaml` template into Zabbix
+3. Give the macro `{$WEBSITE_CERTIFICATE_TARGETS_LIST}` value of the JSON
+4. Assign the template to host
